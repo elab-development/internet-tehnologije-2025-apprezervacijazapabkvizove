@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 
 
-
 class Table(models.Model):
     label = models.CharField(max_length=30, unique=True)
     capacity = models.PositiveSmallIntegerField()
@@ -93,3 +92,22 @@ class ActivityLog(models.Model):
         return f"{self.user} - {self.action}"
     
 
+class UserProfile(models.Model):
+    class Role(models.TextChoices):
+        GUEST = "guest", "Guest"
+        USER = "user", "User"
+        ADMIN = "admin", "Admin"
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile",
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=Role.choices,
+        default=Role.GUEST,
+    )
+
+    def __str__(self):
+        return f"{self.user.username} ({self.role})"
