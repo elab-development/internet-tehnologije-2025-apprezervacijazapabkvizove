@@ -9,16 +9,16 @@ logger = logging.getLogger(__name__)
 
 
 class ApiJsonErrorMiddleware:
-    """Ensure /api/* endpoints return JSON for Django-level errors (404/403/500)."""
+   
 
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         try:
-            return self.get_response(request)
+            response = self.get_response(request)
         except Exception as exc:
-            # Only enforce JSON for API paths.
+
             if not request.path.startswith("/api/"):
                 raise
 
@@ -39,3 +39,12 @@ class ApiJsonErrorMiddleware:
                 {"error": {"type": "ServerError", "detail": "Internal server error."}},
                 status=500,
             )
+
+        
+        if request.path.startswith("/api/") and response.status_code == 404:
+            return JsonResponse(
+                {"error": {"type": "NotFound", "detail": "Not found."}},
+                status=404,
+            )
+
+        return response
