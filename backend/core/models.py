@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 
+
 class Table(models.Model):
     label = models.CharField(max_length=30, unique=True)
     capacity = models.PositiveSmallIntegerField()
@@ -41,6 +42,8 @@ class Reservation(models.Model):
 
     team_name = models.CharField(max_length=80)
     party_size = models.PositiveSmallIntegerField()
+    note = models.CharField(max_length=255, blank=True, default="")
+
 
     status = models.CharField(
         max_length=20,
@@ -51,14 +54,16 @@ class Reservation(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["table", "quiz"],
-                name="unique_table_per_quiz"
-            )
+            models.UniqueConstraint(fields=["table", "quiz"], name="unique_table_per_quiz"),
+            models.CheckConstraint(
+                condition=models.Q(party_size__gt=0),
+                name="party_size_gt_0",
+            ),
         ]
 
     def __str__(self):
         return f"{self.team_name} - {self.table} ({self.status})"
+
 
 
 class EmailLog(models.Model):
@@ -86,3 +91,5 @@ class ActivityLog(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.action}"
+    
+
