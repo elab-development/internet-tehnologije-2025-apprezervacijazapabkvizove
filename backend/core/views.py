@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .permissions import IsAuthenticatedOrReadOnly
 from rest_framework import viewsets, permissions
 from .models import Table, Quiz, Reservation, EmailLog, ActivityLog
 from .serializers import (
