@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'core.apps.CoreConfig',
     'django.contrib.staticfiles',
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -129,4 +130,9 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.JSONParser",
     ],
     "EXCEPTION_HANDLER": "core.exceptions.custom_exception_handler",
+
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+
 }
