@@ -55,10 +55,13 @@ export default function LoginPage() {
     <>
       <Navbar />
 
-      <main style={{ padding: 24, maxWidth: 420 }}>
-        <h1>Login</h1>
+      <main className="container">
+        <h1>Prijava</h1>
+        <p className="subTitle">Uloguj se da rezervišeš sto za sledeći kviz.</p>
 
-        <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
+        <div className="card">
+          {error && <div className="error">{error}</div>}
+
           <Input
             label="Username"
             value={username}
@@ -71,8 +74,6 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
-          {error && <div style={{ color: "red" }}>{error}</div>}
 
           <Button onClick={handleLogin}>Login</Button>
         </div>

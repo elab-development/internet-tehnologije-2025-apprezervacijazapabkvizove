@@ -21,11 +21,7 @@ export default function ReservationPage() {
 
     if (!token) {
       setMessage("Morate biti ulogovani da biste pristupili rezervacijama.");
-
-      setTimeout(() => {
-        router.push("/login");
-      },2000);
-
+      setTimeout(() => router.push("/login"), 2000);
       return;
     }
   }, [router]);
@@ -43,59 +39,42 @@ export default function ReservationPage() {
     <>
       <Navbar />
 
-      <main style={{ padding: 24, maxWidth: 500 }}>
+      <main className="container">
         <h1>Rezervacija</h1>
+        <p className="subTitle">Unesi podatke i pošalji zahtev za rezervaciju.</p>
 
-        {/* PORUKA ZA NEULOGOVANOG KORISNIKA */}
-        {message && (
-          <div
-            style={{
-              marginBottom: 16,
-              padding: 12,
-              border: "1px solid #f5c2c7",
-              background: "#f8d7da",
-              color: "#842029",
-              borderRadius: 8,
-            }}
-          >
-            {message}
-          </div>
-        )}
+        <div className="card">
+          {message && <div className="notice">{message}</div>}
 
-        {/* Forma ce se videti samo ako je korisnik ulogovan */}
-        {!message && (
-          <>
-            <Input
-              label="Naziv tima"
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-            />
-
-            <Select
-              label="Broj ljudi"
-              value={partySize}
-              onChange={(e) => setPartySize(Number(e.target.value))}
-              options={partyChoice}
-            />
-
-            <label style={{ display: "block", marginBottom: 12 }}>
-              <div style={{ marginBottom: 6 }}>Napomena</div>
-              <textarea
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                rows={4}
-                style={{
-                  padding: "10px 12px",
-                  border: "1px solid #ccc",
-                  borderRadius: 8,
-                  width: "100%",
-                }}
+          {!message && (
+            <>
+              <Input
+                label="Naziv tima"
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
               />
-            </label>
 
-            <Button onClick={handleSubmit}>Pošalji</Button>
-          </>
-        )}
+              <Select
+                label="Broj ljudi"
+                value={partySize}
+                onChange={(e) => setPartySize(Number(e.target.value))}
+                options={partyChoice}
+              />
+
+              <label className="field">
+                <div className="label">Napomena</div>
+                <textarea
+                  className="textarea"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  rows={4}
+                />
+              </label>
+
+              <Button onClick={handleSubmit}>Pošalji</Button>
+            </>
+          )}
+        </div>
       </main>
     </>
   );
