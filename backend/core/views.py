@@ -25,7 +25,8 @@ class QuizViewSet(viewsets.ModelViewSet):
 
 class ReservationViewSet(viewsets.ModelViewSet):
     serializer_class = ReservationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
 
     def get_queryset(self):
         return Reservation.objects.filter(user=self.request.user)
@@ -45,4 +46,4 @@ class ActivityLogViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ActivityLogSerializer
     permission_classes = [permissions.IsAdminUser]
 
-# Create your views here.
+
