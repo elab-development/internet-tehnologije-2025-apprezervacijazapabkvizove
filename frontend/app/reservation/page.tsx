@@ -1,59 +1,102 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import Navbar from "@/components/ui/navbar";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/select";
 
-export default function ReservationsPage() {
+export default function ReservationPage() {
+  const router = useRouter();
+
   const [teamName, setTeamName] = useState("");
   const [partySize, setPartySize] = useState(2);
   const [note, setNote] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setMessage("Morate biti ulogovani da biste pristupili rezervacijama.");
+
+      setTimeout(() => {
+        router.push("/login");
+      },2000);
+
+      return;
+    }
+  }, [router]);
+
+  function handleSubmit() {
+    alert(`Tim: ${teamName}\nLjudi: ${partySize}\nNapomena: ${note}`);
+  }
 
   const partyChoice = [2, 3, 4, 5, 6, 7].map((n) => ({
     value: n,
     label: String(n),
   }));
 
-  function handleSubmit() {
-    alert(`Tim: ${teamName}\nLjudi: ${partySize}\nNapomena: ${note}`);
-  }
-
   return (
-    <main style={{ padding: 24, maxWidth: 500 }}>
-      <h1>Rezervacije</h1>
+    <>
+      <Navbar />
 
-      <Input
-        label="Naziv tima"
-        value={teamName}
-        onChange={(e) => setTeamName(e.target.value)}
-      />
+      <main style={{ padding: 24, maxWidth: 500 }}>
+        <h1>Rezervacija</h1>
 
-      <Select
-        label="Broj ljudi"
-        value={partySize}
-        onChange={(e) => setPartySize(Number(e.target.value))}
-        options={partyChoice}
-      />
+        {/* PORUKA ZA NEULOGOVANOG KORISNIKA */}
+        {message && (
+          <div
+            style={{
+              marginBottom: 16,
+              padding: 12,
+              border: "1px solid #f5c2c7",
+              background: "#f8d7da",
+              color: "#842029",
+              borderRadius: 8,
+            }}
+          >
+            {message}
+          </div>
+        )}
 
-      <label style={{ display: "block", marginBottom: 12 }}>
-        <div style={{ marginBottom: 6 }}>Napomena</div>
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          rows={4}
-          style={{ padding: "10px 12px", border: "1px solid #ccc", borderRadius: 8, width: "100%" }}
-        />
-      </label>
+        {/* Forma ce se videti samo ako je korisnik ulogovan */}
+        {!message && (
+          <>
+            <Input
+              label="Naziv tima"
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value)}
+            />
 
-      <Button onClick={handleSubmit}>Pošalji</Button>
+            <Select
+              label="Broj ljudi"
+              value={partySize}
+              onChange={(e) => setPartySize(Number(e.target.value))}
+              options={partyChoice}
+            />
 
-      <nav style={{ display: "flex", gap: 16, marginTop: 20 }}>
-        <Link href="/">Pocetna</Link>
-      </nav>
-    
+            <label style={{ display: "block", marginBottom: 12 }}>
+              <div style={{ marginBottom: 6 }}>Napomena</div>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                rows={4}
+                style={{
+                  padding: "10px 12px",
+                  border: "1px solid #ccc",
+                  borderRadius: 8,
+                  width: "100%",
+                }}
+              />
+            </label>
 
-    </main>
+            <Button onClick={handleSubmit}>Pošalji</Button>
+          </>
+        )}
+      </main>
+    </>
   );
 }

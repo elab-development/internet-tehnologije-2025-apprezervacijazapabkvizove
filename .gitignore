@@ -10,3 +10,23 @@ __pycache__/
 venv/
 env/
 
+# --- Next.js ---
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+frontend/.vercel/
+frontend/.turbo/
+frontend/next-env.d.ts
+
+# env files
+frontend/.env.local
+frontend/.env.*.local
+
+# logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# OS junk
+.DS_Store
