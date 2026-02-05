@@ -37,5 +37,10 @@ class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        Token.objects.filter(user=request.user).delete()
-        return Response({"message": "Logout successful."})
+        # Briše samo token koji je korišćen u ovom zahtevu (praktičnije).
+        if hasattr(request, "auth") and request.auth:
+            request.auth.delete()
+        else:
+            Token.objects.filter(user=request.user).delete()
+
+        return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
