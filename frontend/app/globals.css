@@ -46,11 +46,25 @@ a:hover {
 .navbar {
   padding: 12px 24px;         
   border-bottom: 1px solid #2a2a2a;   
-  background: #102721;                
+  background: #173127;                
 
   display: flex;                      
   justify-content: space-between;     
   align-items: center;                
+}
+
+.navbarInner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbarLogo {
+  height:55px;
+  width: auto;
 }
 
 
@@ -152,6 +166,18 @@ a:hover {
   border: 1px solid #E6CF9A;
   border-radius: 12px;
   padding: 14px;
+}
+
+.smallCard2 {
+  color: #102721;
+  background: #E6CF9A;
+  border: 1px solid #E6CF9A;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.smallCard2:hover{
+  background: #c7b17f;
 }
 
 @media (max-width: 700px) {

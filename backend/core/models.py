@@ -41,7 +41,7 @@ class Reservation(models.Model):
 
     team_name = models.CharField(max_length=80)
     party_size = models.PositiveSmallIntegerField()
-    note = models.CharField(max_length=255, blank=True, default="")
+   # note = models.CharField(max_length=255, blank=True, default="")
 
 
     status = models.CharField(

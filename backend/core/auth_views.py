@@ -37,7 +37,6 @@ class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        # Briše samo token koji je korišćen u ovom zahtevu (praktičnije).
         if hasattr(request, "auth") and request.auth:
             request.auth.delete()
         else:
