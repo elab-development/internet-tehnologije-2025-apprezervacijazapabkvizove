@@ -37,18 +37,10 @@ class ReservationViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def suggest_table(self, request):
-        """
-        POST /api/reservations/suggest-table/
-        body: { "quiz_id": 1, "party_size": 4 }
-
-        Pravilo:
-        - bira najmanji slobodan sto koji može da primi ekipu
-        """
 
         quiz_id = request.data.get("quiz_id")
         party_size = request.data.get("party_size")
 
-        # validacija party_size
         try:
             party_size = int(party_size)
         except (TypeError, ValueError):
@@ -69,7 +61,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # proveri da li kviz postoji
         try:
             quiz = Quiz.objects.get(id=quiz_id)
         except Quiz.DoesNotExist:
@@ -78,13 +69,11 @@ class ReservationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # zauzeti stolovi za ovaj kviz (samo ACTIVE)
         taken_table_ids = Reservation.objects.filter(
             quiz=quiz,
             status=Reservation.Status.ACTIVE,
         ).values_list("table_id", flat=True)
 
-        # kandidati: najmanji sto koji prima ekipu
         table = (
             Table.objects.filter(capacity__gte=party_size)
             .exclude(id__in=taken_table_ids)
@@ -125,15 +114,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def confirm(self, request):
-        """
-        POST /api/reservations/confirm/
-        body: {
-          "quiz_id": 1,
-          "table_id": 2,
-          "team_name": "Ekipa A",
-          "party_size": 4
-        }
-        """
+
 
         quiz_id = request.data.get("quiz_id")
         table_id = request.data.get("table_id")
@@ -160,7 +141,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # učitaj quiz i table
         try:
             quiz = Quiz.objects.get(id=quiz_id)
         except Quiz.DoesNotExist:
@@ -177,7 +157,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # proveri zauzetost
         already_taken = Reservation.objects.filter(
             quiz=quiz,
             table=table,

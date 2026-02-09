@@ -39,7 +39,6 @@ export default function ReservationPage() {
   const [suggestedTable, setSuggestedTable] = useState<SuggestedTable | null>(null);
   const [suggestMsg, setSuggestMsg] = useState<string | null>(null);
 
-  // auth guard + query param quiz
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -52,7 +51,6 @@ export default function ReservationPage() {
     if (q) setQuizId(q);
   }, [router, params]);
 
-  // load quizzes (za combobox)
   useEffect(() => {
     async function loadQuizzes() {
       try {
@@ -61,7 +59,6 @@ export default function ReservationPage() {
         const arr = Array.isArray(data) ? data : data.results || [];
         setQuizzes(arr);
       } catch {
-        // ne komplikujemo: ako pukne, samo ostavi prazno
       }
     }
     loadQuizzes();
@@ -170,12 +167,6 @@ export default function ReservationPage() {
 
     alert(`Rezervacija potvrđena!\nTim: ${teamName}\nSto: ${data.reservation.table.label}`);
 
-    // opcionalno: resetuj state nakon potvrde
-    // setSuggestedTable(null);
-    // setSuggestMsg(null);
-    // setTeamName("");
-    // setPartySize(2);
-    // setNote("");
   } catch (e: any) {
     setSuggestMsg(e.message || "Greška.");
   }
@@ -227,7 +218,6 @@ export default function ReservationPage() {
               <Button onClick={handleSubmit}>Pošalji</Button>
             </div>
 
-            {/* RIGHT */}
             <div className="smallCard">
               <h2 style={{ marginBottom: 10 }}>Trenutna rezervacija</h2>
 

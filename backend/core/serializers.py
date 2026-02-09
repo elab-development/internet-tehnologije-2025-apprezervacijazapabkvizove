@@ -31,7 +31,7 @@ class ReservationSerializer(serializers.ModelSerializer):
 
         if party_size > table.capacity:
             raise serializers.ValidationError(
-                "Party size exceeds table capacity."
+                "Broj clanova prelazi dozvoljen broj ljudi za stolom"
             )
 
         return data

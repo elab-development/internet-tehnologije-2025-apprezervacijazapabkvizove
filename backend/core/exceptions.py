@@ -21,7 +21,7 @@ def custom_exception_handler(exc: Exception, context: Dict[str, Any]) -> Optiona
     """Return all DRF errors in a consistent JSON envelope."""
     response = drf_exception_handler(exc, context)
 
-    # If DRF couldn't handle it, let middleware/Django deal with it.
+    
     if response is None:
         return None
 
@@ -37,7 +37,7 @@ def custom_exception_handler(exc: Exception, context: Dict[str, Any]) -> Optiona
         payload["error"]["detail"] = "Validation error."
         payload["error"]["fields"] = _flatten_errors(response.data)
     else:
-        # Common DRF errors include {"detail": "..."} or lists/dicts
+        
         data = response.data
         if isinstance(data, dict) and "detail" in data:
             payload["error"]["detail"] = str(data["detail"])

@@ -35,7 +35,6 @@ export default function Home() {
 
         const data = await res.json();
 
-        // očekujemo da backend vraća listu kvizova
         if (!Array.isArray(data)) {
           throw new Error("Neispravan format podataka sa servera.");
         }
