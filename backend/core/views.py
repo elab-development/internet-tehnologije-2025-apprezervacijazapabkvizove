@@ -41,14 +41,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
         quiz_id = request.data.get("quiz_id")
         party_size = request.data.get("party_size")
 
-        try:
-            party_size = int(party_size)
-        except (TypeError, ValueError):
-            return Response(
-                {"detail": "party_size mora biti broj."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
         if party_size < 1 or party_size > 7:
             return Response(
                 {"detail": "party_size mora biti između 1 i 7."},
@@ -124,14 +116,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
         if not team_name:
             return Response(
                 {"detail": "team_name je obavezan."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            party_size = int(party_size)
-        except (TypeError, ValueError):
-            return Response(
-                {"detail": "party_size mora biti broj."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

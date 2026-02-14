@@ -9,7 +9,6 @@ from rest_framework.exceptions import ValidationError
 
 
 def _flatten_errors(detail: Any) -> Any:
-    """Convert DRF ErrorDetail / nested structures into plain python types."""
     if isinstance(detail, list):
         return [_flatten_errors(x) for x in detail]
     if isinstance(detail, dict):
@@ -18,7 +17,6 @@ def _flatten_errors(detail: Any) -> Any:
 
 
 def custom_exception_handler(exc: Exception, context: Dict[str, Any]) -> Optional[Response]:
-    """Return all DRF errors in a consistent JSON envelope."""
     response = drf_exception_handler(exc, context)
 
     
