@@ -20,8 +20,8 @@ class Quiz(models.Model):
 
 class Reservation(models.Model):
     class Status(models.TextChoices):
-        ACTIVE = "active", "Active"
-        CANCELLED = "cancelled", "Cancelled"
+        ACTIVE = "aktivna", "Aktivna"
+        CANCELLED = "neaktivna", "Neaktivna"
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
