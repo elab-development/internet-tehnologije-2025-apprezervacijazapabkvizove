@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/ui/navbar";
+import Map from "@/components/ui/map";
 
 type Quiz = {
   id: number;
@@ -89,6 +90,8 @@ export default function Home() {
               a možete rezervisati preko Instagrama ili XY broja, a od sada možete i ovde - u sekciji Rezervacija!
             </p>
           </div>
+
+
         </div>
 
         <h1 style={{ marginTop: 35 }}>Izaberi kviz za rezervaciju</h1>
@@ -109,6 +112,15 @@ export default function Home() {
             ))
           )}
         </div>
+        <h1 style={{ marginTop: 35 }}>Lokacija</h1>
+
+        <div className="smallCard" style={{ marginTop: 24 }}>
+          <p>Nađi nas ovde — klikni marker za info.</p>
+          <div style={{ marginTop: 12 }}>
+            <Map />
+          </div>
+        </div>
+
       </main>
     </>
   );
