@@ -4,11 +4,15 @@ import Navbar from "@/components/ui/navbar";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+// ✅ tvoje komponente su default export
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
+
 type Reservation = {
   id: number;
   user: number;
-  quiz: number;   // ID
-  table: number;  // ID
+  quiz: number;
+  table: number;
   team_name: string;
   party_size: number;
   status: string;
@@ -40,6 +44,10 @@ export default function MyReservationPage() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [tables, setTables] = useState<Table[]>([]);
+
+  // EDIT STATE
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [newTeamName, setNewTeamName] = useState<string>("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -89,7 +97,6 @@ export default function MyReservationPage() {
     loadAll();
   }, []);
 
-  // Map lookup: id -> objekat (da prikažemo ime kviza i label stola)
   const quizById = useMemo(() => {
     const m = new Map<number, Quiz>();
     quizzes.forEach((q) => m.set(q.id, q));
@@ -101,6 +108,92 @@ export default function MyReservationPage() {
     tables.forEach((t) => m.set(t.id, t));
     return m;
   }, [tables]);
+
+  function startEdit(r: Reservation) {
+    setEditingId(r.id);
+    setNewTeamName(r.team_name);
+    setError(null);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setNewTeamName("");
+  }
+
+  async function saveTeamName(reservationId: number) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Niste ulogovani.");
+      return;
+    }
+
+    const name = newTeamName.trim();
+    if (!name) {
+      setError("Ime ekipe ne može biti prazno.");
+      return;
+    }
+
+    try {
+      setError(null);
+
+      const res = await fetch(`http://127.0.0.1:8000/api/reservations/${reservationId}/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({ team_name: name }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.detail || "Ne mogu da izmenim ime ekipe.");
+      }
+
+      const updated = await res.json();
+
+      setReservations((prev) =>
+        prev.map((r) => (r.id === reservationId ? { ...r, team_name: updated.team_name } : r))
+      );
+
+      cancelEdit();
+    } catch (e: any) {
+      setError(e?.message || "Greška pri izmeni.");
+    }
+  }
+
+  async function cancelReservation(reservationId: number) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Niste ulogovani.");
+      return;
+    }
+
+    const ok = confirm("Da li ste sigurni da želite da otkažete rezervaciju?");
+    if (!ok) return;
+
+    try {
+      setError(null);
+
+      const res = await fetch(`http://127.0.0.1:8000/api/reservations/${reservationId}/cancel/`, {
+        method: "POST",
+        headers: { Authorization: `Token ${token}` },
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.detail || "Ne mogu da otkažem rezervaciju.");
+      }
+
+      setReservations((prev) =>
+        prev.map((r) => (r.id === reservationId ? { ...r, status: "neaktivna" } : r))
+      );
+
+      if (editingId === reservationId) cancelEdit();
+    } catch (e: any) {
+      setError(e?.message || "Greška pri otkazivanju.");
+    }
+  }
 
   return (
     <>
@@ -130,9 +223,29 @@ export default function MyReservationPage() {
                   const q = quizById.get(r.quiz);
                   const t = tableById.get(r.table);
 
+                  const isCancelled = r.status === "neaktivna";
+                  const isEditing = editingId === r.id;
+
                   return (
-                    <div key={r.id} className="smallCard2">
-                      <h3 style={{ marginBottom: 6 }}>{r.team_name}</h3>
+                    <div
+                      key={r.id}
+                      className="smallCard2"
+                      style={{
+                        opacity: isCancelled ? 0.45 : 1,
+                      }}
+                    >
+
+                      {!isEditing ? (
+                        <h3 style={{ marginBottom: 6 }}>{r.team_name}</h3>
+                      ) : (
+                        <div style={{ marginBottom: 10 }}>
+                          <Input
+                            label="Ime ekipe"
+                            value={newTeamName}
+                            onChange={(e) => setNewTeamName(e.target.value)}
+                          />
+                        </div>
+                      )}
 
                       <p style={{ marginBottom: 6 }}>
                         <b>Status:</b> {r.status}
@@ -147,9 +260,26 @@ export default function MyReservationPage() {
                         <b>Sto:</b> {t ? `${t.label}` : `#${r.table}`}
                       </p>
 
-                      <p style={{ marginBottom: 0 }}>
+                      <p style={{ marginBottom: 10 }}>
                         <b>Broj ljudi:</b> {r.party_size}
                       </p>
+
+                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                        {!isEditing ? (
+                          <Button onClick={() => startEdit(r)} disabled={isCancelled}>
+                            Izmeni ime
+                          </Button>
+                        ) : (
+                          <>
+                            <Button onClick={() => saveTeamName(r.id)}>Sačuvaj</Button>
+                            <Button onClick={cancelEdit}>Odustani</Button>
+                          </>
+                        )}
+
+                        <Button onClick={() => cancelReservation(r.id)} disabled={isCancelled}>
+                          Otkaži
+                        </Button>
+                      </div>
                     </div>
                   );
                 })}

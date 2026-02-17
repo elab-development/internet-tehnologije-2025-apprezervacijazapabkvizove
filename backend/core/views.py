@@ -240,6 +240,33 @@ class ReservationViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_201_CREATED,
         )
+    
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="cancel",
+        permission_classes=[IsAuthenticated],
+    )
+    def cancel(self, request, pk=None):
+        reservation = self.get_object()
+
+        if reservation.status == Reservation.Status.CANCELLED:
+            return Response(
+                {"detail": "Rezervacija je već otkazana."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        reservation.status = Reservation.Status.CANCELLED
+        reservation.save(update_fields=["status"])
+
+        return Response(
+            {
+                "message": "Rezervacija je otkazana.",
+                "reservation": {"id": reservation.id, "status": reservation.status},
+            },
+            status=status.HTTP_200_OK,
+        )
 
     def get_queryset(self):
         return Reservation.objects.filter(user=self.request.user)
