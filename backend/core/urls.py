@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from .views import me
 from .auth_views import RegisterView, LoginView, LogoutView
 from .views import (
     TableViewSet,
@@ -20,5 +21,9 @@ urlpatterns = [
     path("auth/register/", RegisterView.as_view(), name="auth-register"),
     path("auth/login/", LoginView.as_view(), name="auth-login"),
     path("auth/logout/", LogoutView.as_view(), name="auth-logout"),
+
+    path("me/", me, name="api-me"),
+
     path("", include(router.urls)),
 ]
+

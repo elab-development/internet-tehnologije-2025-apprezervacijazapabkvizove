@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.authtoken.models import Token
+from drf_spectacular.utils import extend_schema
 
 from .auth_serializers import RegisterSerializer, LoginSerializer
 
@@ -9,6 +10,7 @@ from .auth_serializers import RegisterSerializer, LoginSerializer
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
+    @extend_schema(request=RegisterSerializer)
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -24,6 +26,7 @@ class RegisterView(APIView):
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
+    @extend_schema(request=LoginSerializer)
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

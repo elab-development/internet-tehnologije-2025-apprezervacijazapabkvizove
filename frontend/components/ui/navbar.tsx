@@ -10,10 +10,32 @@ export default function Navbar() {
     const router = useRouter();
     const [username, setUsername] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
     useEffect(() => {
-        setUsername(localStorage.getItem("username"));
-        setToken(localStorage.getItem("token"));
+        const storedToken = localStorage.getItem("token");
+        const storedUsername = localStorage.getItem("username");
+
+        setUsername(storedUsername);
+        setToken(storedToken);
+
+        if (storedToken) {
+            fetch("http://127.0.0.1:8000/api/me/", {
+                headers: {
+                    Authorization: `Token ${storedToken}`,
+                },
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.json();
+                })
+                .then(data => {
+                    setIsAdmin(data.is_staff === true);
+                })
+                .catch(() => {
+                    setIsAdmin(false);
+                });
+        }
     }, []);
 
     function handleLogout() {
@@ -21,6 +43,7 @@ export default function Navbar() {
         localStorage.removeItem("username");
         setUsername(null);
         setToken(null);
+        setIsAdmin(false);
         router.push("/login");
     }
 
@@ -36,14 +59,16 @@ export default function Navbar() {
                     width={160}
                     height={40}
                 />
-
             </Link>
-
 
             <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
                 <Link href="/reservation">Rezervacija</Link>
                 <Link href="/myreservation">Moje rezervacije</Link>
 
+                
+                {isAdmin && (
+                    <Link href="/admin_tables/">Upravljanje stolovima</Link>
+                )}
 
                 {isLoggedIn ? (
                     <>

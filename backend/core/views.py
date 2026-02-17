@@ -15,11 +15,31 @@ from .serializers import (
     ActivityLogSerializer,
 )
 
+from rest_framework.decorators import api_view, permission_classes
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def me(request):
+    u = request.user
+    return Response({
+        "id": u.id,
+        "username": u.username,
+        "email": u.email,
+        "is_staff": u.is_staff,
+        "is_superuser": u.is_superuser,
+    })
+
+
+
 
 class TableViewSet(viewsets.ModelViewSet):
     queryset = Table.objects.all()
     serializer_class = TableSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            return [permissions.IsAdminUser()]
+        return [IsAuthenticatedOrReadOnly()]
 
 
 class QuizViewSet(viewsets.ModelViewSet):
