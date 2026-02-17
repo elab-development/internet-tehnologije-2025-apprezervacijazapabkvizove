@@ -11,6 +11,7 @@ export default function RegisterPage() {
     const router = useRouter();
 
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -32,40 +33,44 @@ export default function RegisterPage() {
             return;
         }
 
-        if (!username || !password) {
-            setError("Unesi username i password.");
+        if (!username || !email || !password || !password2) {
+            setError("Popuni username, email i obe lozinke.");
             return;
         }
 
+
         try {
-            
+
             const res = await fetch("http://127.0.0.1:8000/api/auth/register/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password, password2 }),
+                body: JSON.stringify({ username, email, password, password2 }),
 
             });
 
             const data = await res.json();
+          // setInfo(JSON.stringify(data));
 
-           if (!res.ok) {
+
+            if (!res.ok) {
+                const fields = data?.error?.fields;
                 const msg =
-                    data?.username?.[0] ||
-                    data?.password?.[0] ||
-                    data?.non_field_errors?.[0] ||
-                    data?.detail ||
+                    (fields && Object.values(fields).flat()[0]) ||
                     data?.error?.detail ||
-                    JSON.stringify(data);
-
+                    data?.detail ||
+                    "Greška pri registraciji.";
                 throw new Error(msg);
-            } 
+
+
+
+            }
 
 
 
             if (data?.token) {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("username", username);
-                router.push("/"); 
+                router.push("/");
                 return;
             }
 
@@ -103,6 +108,11 @@ export default function RegisterPage() {
                         label="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <Input
+                        label="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
 
                     <Input

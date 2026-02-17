@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/ui/navbar";
-import Map from "@/components/ui/map";
+import dynamic from "next/dynamic";
+
+const Map = dynamic(() => import("@/components/ui/map"), { ssr: false });
+
 
 type Quiz = {
   id: number;
