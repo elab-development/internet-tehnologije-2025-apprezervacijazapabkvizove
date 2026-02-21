@@ -165,7 +165,7 @@ export default function ReservationPage() {
       throw new Error(data?.detail || "Greška pri potvrdi rezervacije.");
     }
 
-    alert(`Rezervacija potvrđena!\n Proverite mejl adresu sa detaljima!`);
+    alert(`Rezervacija potvrđena!\nProverite mejl adresu sa detaljima!`);
 
   } catch (e: any) {
     setSuggestMsg(e.message || "Greška.");

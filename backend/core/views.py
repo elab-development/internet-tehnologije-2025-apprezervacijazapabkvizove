@@ -3,6 +3,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from .permissions import IsAdminOrReadOnly
 
 from .emailing import send_reservation_confirmation_email
 from .permissions import IsAuthenticatedOrReadOnly
@@ -45,7 +46,11 @@ class TableViewSet(viewsets.ModelViewSet):
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.request.method in ["POST", "PUT", "PATCH", "DELETE"]:
+            return [permissions.IsAdminUser()]
+        return [IsAuthenticatedOrReadOnly()]
 
 
 class ReservationViewSet(viewsets.ModelViewSet):

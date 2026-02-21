@@ -146,7 +146,6 @@ export default function AdminTablesPage() {
 
         {!message && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12 }}>
-            {/* LEFT: forma */}
             <div className="smallCard">
               <h2 style={{ marginBottom: 10 }}>Dodaj sto</h2>
 
