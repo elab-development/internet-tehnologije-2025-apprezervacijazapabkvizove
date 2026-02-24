@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/ui/navbar";
 import dynamic from "next/dynamic";
+import { apiUrl } from "@/lib/api";
 
 const Map = dynamic(() => import("@/components/ui/map"), { ssr: false });
 
@@ -29,7 +30,7 @@ export default function Home() {
       try {
         setError(null);
 
-        const res = await fetch("http://127.0.0.1:8000/api/quizzes/", {
+        const res = await fetch(apiUrl("/api/quizzes/"), {
           signal: controller.signal,
         });
 

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/ui/navbar";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
+import { apiUrl } from "@/api";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -41,7 +42,7 @@ export default function RegisterPage() {
 
         try {
 
-            const res = await fetch("http://127.0.0.1:8000/api/auth/register/", {
+            const res = await fetch(apiUrl("/api/auth/register/"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password, password2 }),

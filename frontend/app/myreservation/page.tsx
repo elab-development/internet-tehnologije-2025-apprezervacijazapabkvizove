@@ -4,9 +4,10 @@ import Navbar from "@/components/ui/navbar";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-// ✅ tvoje komponente su default export
+
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import { apiUrl } from "@/api";
 
 type Reservation = {
   id: number;
@@ -65,7 +66,7 @@ export default function MyReservationPage() {
       try {
         setError(null);
 
-        const resR = await fetch("http://127.0.0.1:8000/api/reservations/", {
+        const resR = await fetch(apiUrl("/api/reservations/"), {
           headers: { Authorization: `Token ${token}` },
           cache: "no-store",
         });
@@ -74,7 +75,7 @@ export default function MyReservationPage() {
         const arrR = Array.isArray(dataR) ? dataR : dataR.results || [];
         setReservations(arrR);
 
-        const resQ = await fetch("http://127.0.0.1:8000/api/quizzes/", {
+        const resQ = await fetch(apiUrl("/api/quizzes/"), {
           cache: "no-store",
         });
         if (!resQ.ok) throw new Error("Ne mogu da učitam kvizove.");
@@ -82,7 +83,7 @@ export default function MyReservationPage() {
         const arrQ = Array.isArray(dataQ) ? dataQ : dataQ.results || [];
         setQuizzes(arrQ);
 
-        const resT = await fetch("http://127.0.0.1:8000/api/tables/", {
+        const resT = await fetch(apiUrl("/api/tables/"), {
           cache: "no-store",
         });
         if (!resT.ok) throw new Error("Ne mogu da učitam stolove.");
@@ -136,7 +137,7 @@ export default function MyReservationPage() {
     try {
       setError(null);
 
-      const res = await fetch(`http://127.0.0.1:8000/api/reservations/${reservationId}/`, {
+      const res = await fetch(apiUrl(`/api/reservations/${reservationId}/`), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -175,7 +176,7 @@ export default function MyReservationPage() {
     try {
       setError(null);
 
-      const res = await fetch(`http://127.0.0.1:8000/api/reservations/${reservationId}/cancel/`, {
+      const res = await fetch(apiUrl(`/api/reservations/${reservationId}/cancel/`), {
         method: "POST",
         headers: { Authorization: `Token ${token}` },
       });

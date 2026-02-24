@@ -14,7 +14,6 @@ import {
   useMapEvents,
 } from "react-leaflet";
 
-// Fix za default marker ikone (Next + Leaflet često ne nalazi lokalne assete)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -41,10 +40,10 @@ function ClickToAddMarker({
 export default function Map() {
   const key = process.env.NEXT_PUBLIC_MAPTILER_KEY;
 
-  // Lokacija (Via Stella)
+
   const position: LatLngTuple = [44.794507097199535, 20.4757586];
 
-  // Napredno: klikom na mapu korisnik može da postavi “svoj” marker (npr. gde parkira)
+
   const [pickedPos, setPickedPos] = useState<LatLngTuple | null>(null);
 
 
@@ -67,7 +66,7 @@ export default function Map() {
         style={{ height: "100%", width: "100%" }}
         scrollWheelZoom
       >
-        {/* Lejeri (napredno): korisnik menja stil mape */}
+        {}
         <LayersControl position="topright">
           <BaseLayer checked name="Streets">
             <TileLayer
@@ -84,7 +83,7 @@ export default function Map() {
           </BaseLayer>
         </LayersControl>
 
-        {/* Marker lokacije */}
+        {}
         <Marker position={position}>
           <Popup>
             <div style={{ lineHeight: 1.4 }}>

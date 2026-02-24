@@ -7,6 +7,7 @@ import Navbar from "@/components/ui/navbar";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Select from "@/components/ui/select";
+import { apiUrl } from "@/api";
 
 type Quiz = {
   id: number;
@@ -55,7 +56,7 @@ export default function ReservationClient() {
   useEffect(() => {
     async function loadQuizzes() {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/quizzes/", { cache: "no-store" });
+        const res = await fetch(apiUrl("/api/quizzes/"), { cache: "no-store" });
         const data = await res.json();
         const arr = Array.isArray(data) ? data : data.results || [];
         setQuizzes(arr);
@@ -98,7 +99,7 @@ export default function ReservationClient() {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/reservations/suggest-table/", {
+      const res = await fetch(apiUrl("/api/suggest-table/"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +148,7 @@ export default function ReservationClient() {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/reservations/confirm/", {
+      const res = await fetch(apiUrl("/api/confirm-reservation/"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

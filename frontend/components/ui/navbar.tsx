@@ -5,6 +5,7 @@ import Image from "next/image";
 import Button from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { apiUrl } from "@/api";
 
 export default function Navbar() {
     const router = useRouter();
@@ -20,7 +21,7 @@ export default function Navbar() {
         setToken(storedToken);
 
         if (storedToken) {
-            fetch("http://127.0.0.1:8000/api/me/", {
+            fetch(apiUrl("/api/me/"), {
                 headers: {
                     Authorization: `Token ${storedToken}`,
                 },
