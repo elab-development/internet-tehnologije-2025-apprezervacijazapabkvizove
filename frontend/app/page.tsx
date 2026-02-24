@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/ui/navbar";
 import dynamic from "next/dynamic";
-import { apiUrl } from "@/lib/api";
+import { apiUrl } from "@/api";
 
 const Map = dynamic(() => import("@/components/ui/map"), { ssr: false });
 

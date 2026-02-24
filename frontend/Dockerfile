@@ -7,7 +7,7 @@ RUN npm ci
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# build-time env for Next.js (NEXT_PUBLIC_ vars)
+
 ARG NEXT_PUBLIC_MAPTILER_KEY
 ENV NEXT_PUBLIC_MAPTILER_KEY=$NEXT_PUBLIC_MAPTILER_KEY
 
